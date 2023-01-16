@@ -2,7 +2,9 @@
   "private": true,
   "scripts": {
     "build": "tsc",
-    "test": "ava"
+    "watch": "tsc -w",
+    "test": "ava",
+    "test:watch": "ava --watch"
   },
   "dependencies": {
     "ts-enum-util": "^4.0.2"
