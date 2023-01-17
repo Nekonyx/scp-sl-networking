@@ -51,21 +51,22 @@ export class ArgumentOutOfRangeException extends ArgumentException {
     super(DefaultMessage)
 
     // First overload
-    if (typeof paramNameOrMessage === 'undefined') {
+    // no arguments
+    if (arguments.length === 0) {
       return
     }
 
     // Second overload
-    if (
-      typeof paramNameOrMessage === 'string' &&
-      typeof messageOrActualValueOrInnerException === 'undefined'
-    ) {
+    // paramName: string
+    if (arguments.length === 1 && typeof paramNameOrMessage === 'string') {
       this._paramName = paramNameOrMessage
       return
     }
 
     // Third overload
+    // message: string, innerException: Exception
     if (
+      arguments.length === 2 &&
       typeof paramNameOrMessage === 'string' &&
       messageOrActualValueOrInnerException instanceof Exception
     ) {
@@ -75,19 +76,26 @@ export class ArgumentOutOfRangeException extends ArgumentException {
     }
 
     // Fourth overload
+    // paramName: string, message: string
     if (
+      arguments.length === 2 &&
       typeof paramNameOrMessage === 'string' &&
-      typeof messageOrActualValueOrInnerException === 'string' &&
-      typeof message === 'undefined'
+      typeof messageOrActualValueOrInnerException === 'string'
     ) {
-      this._paramName = paramNameOrMessage
       this.message = messageOrActualValueOrInnerException
+      this._paramName = paramNameOrMessage
       return
     }
 
     // Fifth overload
-    this._paramName = paramNameOrMessage
-    this._actualValue = messageOrActualValueOrInnerException
-    this.message = message as string
+    // paramName: string, actualValue: unknown, message: string
+    if (arguments.length === 3) {
+      this.message = message!
+      this._paramName = paramNameOrMessage!
+      this._actualValue = messageOrActualValueOrInnerException
+      return
+    }
+
+    throw new Error('Invalid overload')
   }
 }

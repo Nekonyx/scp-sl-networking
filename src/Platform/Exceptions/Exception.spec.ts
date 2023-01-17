@@ -8,7 +8,7 @@ test('exception without message or inner exception', (t) => {
   t.is(exception.name, Exception.name)
   t.assert(
     exception.Message.includes(Exception.name),
-    'message should contain exception name'
+    `message should contain exception name: ${exception.Message}`
   )
   t.is(exception.InnerException, null)
 })

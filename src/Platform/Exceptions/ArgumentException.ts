@@ -3,31 +3,19 @@ import { SystemException } from './SystemException'
 
 const DefaultMessage = 'Value does not fall within the expected range.'
 
-export interface IArgumentExceptionParams {
-  message?: string
-  innerException?: Exception
-  paramName?: string
-}
-
 /**
  * The exception that is thrown when one of the arguments provided to a method is not valid.
  */
 export class ArgumentException extends SystemException {
-  /**
-   * Name of the parameter that causes this exception
-   */
+  /** Name of the parameter that causes this exception */
   protected _paramName: string | null = null
 
-  /**
-   * Gets the name of the parameter that causes this exception.
-   */
+  /** Gets the name of the parameter that causes this exception. */
   public get ParamName(): string | null {
     return this._paramName
   }
 
-  /**
-   * Initializes a new instance of the ArgumentException class.
-   */
+  /** Initializes a new instance of the ArgumentException class. */
   public constructor()
 
   /**
@@ -62,27 +50,63 @@ export class ArgumentException extends SystemException {
     innerException: Exception
   )
   public constructor(
-    message?: string,
-    paramNameOrInnerException?: string | Exception,
-    innerException?: Exception
+    param1?: string,
+    param2?: string | Exception,
+    param3?: Exception
   ) {
     super(DefaultMessage)
 
-    if (message) {
-      this.message = message
+    // First overload
+    // no arguments
+    if (arguments.length === 0) {
+      return
     }
 
-    if (typeof paramNameOrInnerException === 'string') {
-      this._paramName = paramNameOrInnerException
-      this.message += `\nParameter name: ${this._paramName}`
+    // Second overload
+    // message: string
+    if (arguments.length === 1 && typeof param1 === 'string') {
+      this.message = param1
+      return
     }
 
-    if (paramNameOrInnerException instanceof Exception) {
-      this._innerException = paramNameOrInnerException
+    // Third overload
+    // message: string, innerException: Exception
+    if (
+      arguments.length === 2 &&
+      typeof param1 === 'string' &&
+      param2 instanceof Exception
+    ) {
+      this.message = param1
+      this._innerException = param2
+      return
     }
 
-    if (innerException instanceof Exception) {
-      this._innerException = innerException
+    // Fourth overload
+    // message: string, paramName: string
+    if (
+      arguments.length === 2 &&
+      typeof param1 === 'string' &&
+      typeof param2 === 'string'
+    ) {
+      this.message = `${param1}\nParameter name: ${param2}`
+      this._paramName = param2
+      return
     }
+
+    // Fifth overload
+    // message: string, paramName: string, innerException: Exception
+    if (
+      arguments.length === 3 &&
+      typeof param1 === 'string' &&
+      typeof param2 === 'string' &&
+      param3 instanceof Exception
+    ) {
+      this.message = `${param1}\nParameter name: ${param2}`
+      this._paramName = param2
+      this._innerException = param3
+      return
+    }
+
+    throw new Error('Invalid overload')
   }
 }

@@ -41,11 +41,11 @@ test('exception with message and paramName', (t) => {
   t.is(exception.name, ArgumentException.name)
   t.assert(
     exception.Message.includes(message),
-    'message should contain message'
+    `message should contain message: ${exception.Message}`
   )
   t.assert(
     exception.Message.includes(paramName),
-    'message should contain paramName'
+    `message should contain paramName: ${exception.Message}`
   )
   t.is(exception.ParamName, paramName)
   t.is(exception.InnerException, null)
@@ -61,11 +61,11 @@ test('exception with message, paramName, and inner exception', (t) => {
   t.is(exception.name, ArgumentException.name)
   t.assert(
     exception.Message.includes(message),
-    'message should contain message'
+    `message should contain message: ${exception.Message}`
   )
   t.assert(
     exception.Message.includes(paramName),
-    'message should contain paramName'
+    `message should contain paramName: ${exception.Message}`
   )
   t.is(exception.ParamName, paramName)
   t.is(exception.InnerException, innerException)
