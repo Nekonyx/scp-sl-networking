@@ -1,29 +1,19 @@
-/**
- * Represents errors that occur during application execution.
- */
+/** Represents errors that occur during application execution. */
 export class Exception extends Error {
-  /**
-   * Exception instance that caused the current exception.
-   */
-  private _innerException: Exception | null
+  /** Exception instance that caused the current exception.*/
+  protected _innerException: Exception | null = null
 
-  /**
-   * Gets the Exception instance that caused the current exception.
-   */
+  /** Gets the Exception instance that caused the current exception. */
   public get InnerException(): Exception | null {
     return this._innerException
   }
 
-  /**
-   * Gets a message that describes the current exception.
-   */
+  /** Gets a message that describes the current exception. */
   public get Message(): string {
     return this.message
   }
 
-  /**
-   * Initializes a new instance of the Exception class.
-   */
+  /** Initializes a new instance of the Exception class. */
   public constructor()
 
   /**
@@ -38,12 +28,16 @@ export class Exception extends Error {
    * @param innerException The exception that is the cause of the current exception, or a null reference if no inner exception is specified.
    */
   public constructor(message: string, innerException: Exception)
-  public constructor(message?: string, innerException?: Exception)
   public constructor(message?: string, innerException?: Exception) {
-    super(message ?? '')
+    super()
 
     this.name = this.constructor.name
 
-    this._innerException = innerException ?? null
+    this.message =
+      message ?? `Exception of type "${this.constructor.name}" was thrown`
+
+    if (innerException instanceof Exception) {
+      this._innerException = innerException
+    }
   }
 }

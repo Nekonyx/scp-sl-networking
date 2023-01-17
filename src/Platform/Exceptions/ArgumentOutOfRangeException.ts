@@ -1,19 +1,18 @@
 import { ArgumentException } from './ArgumentException'
 import { Exception } from './Exception'
 
-/**
- * The exception that is thrown when the value of an argument is outside the allowable range of values as defined by the invoked method.
- */
+const DefaultMessage =
+  'Specified argument was out of the range of valid values.'
+
+/** The exception that is thrown when the value of an argument is outside the allowable range of values as defined by the invoked method. */
 export class ArgumentOutOfRangeException extends ArgumentException {
-  private _actualValue: unknown | null
+  protected _actualValue: unknown | null = null
 
   public get ActualValue(): unknown | null {
     return this._actualValue
   }
 
-  /**
-   * Initializes a new instance of the ArgumentOutOfRangeException class.
-   */
+  /** Initializes a new instance of the ArgumentOutOfRangeException class. */
   public constructor()
 
   /**
@@ -48,60 +47,47 @@ export class ArgumentOutOfRangeException extends ArgumentException {
     paramNameOrMessage?: string,
     messageOrActualValueOrInnerException?: string | unknown | Exception,
     message?: string
-  )
-  public constructor(
-    paramNameOrMessage?: string,
-    messageOrActualValueOrInnerException?: string | unknown | Exception,
-    message?: string
   ) {
-    // Sorry for this mess, but it's the only way to get the correct overload
-    super(
-      ...(() => {
-        // First overload
-        // No arguments
-        if (typeof paramNameOrMessage !== 'string') {
-          return []
-        }
+    super(DefaultMessage)
 
-        // Second overload
-        // Only paramName is provided
-        if (
-          typeof paramNameOrMessage === 'string' &&
-          typeof messageOrActualValueOrInnerException === 'undefined' &&
-          typeof message === 'undefined'
-        ) {
-          return [undefined, paramNameOrMessage]
-        }
+    // First overload
+    if (typeof paramNameOrMessage === 'undefined') {
+      return
+    }
 
-        // Third overload
-        // message and innerException are provided
-        if (
-          typeof paramNameOrMessage === 'string' &&
-          messageOrActualValueOrInnerException instanceof Exception
-        ) {
-          return [
-            paramNameOrMessage,
-            messageOrActualValueOrInnerException
-          ] as any
-        }
+    // Second overload
+    if (
+      typeof paramNameOrMessage === 'string' &&
+      typeof messageOrActualValueOrInnerException === 'undefined'
+    ) {
+      this._paramName = paramNameOrMessage
+      return
+    }
 
-        // Fourth overload
-        // paramName, message are provided
-        if (typeof message === 'undefined') {
-          return [messageOrActualValueOrInnerException, paramNameOrMessage]
-        }
+    // Third overload
+    if (
+      typeof paramNameOrMessage === 'string' &&
+      messageOrActualValueOrInnerException instanceof Exception
+    ) {
+      this.message = paramNameOrMessage
+      this._innerException = messageOrActualValueOrInnerException
+      return
+    }
 
-        // Fifth overload
-        // paramName, actualValue, message are provided
-        return [message, paramNameOrMessage]
-      })()
-    )
+    // Fourth overload
+    if (
+      typeof paramNameOrMessage === 'string' &&
+      typeof messageOrActualValueOrInnerException === 'string' &&
+      typeof message === 'undefined'
+    ) {
+      this._paramName = paramNameOrMessage
+      this.message = messageOrActualValueOrInnerException
+      return
+    }
 
-    this._actualValue =
-      typeof paramNameOrMessage !== 'undefined' &&
-      typeof messageOrActualValueOrInnerException !== 'undefined' &&
-      typeof message !== 'undefined'
-        ? messageOrActualValueOrInnerException
-        : null
+    // Fifth overload
+    this._paramName = paramNameOrMessage
+    this._actualValue = messageOrActualValueOrInnerException
+    this.message = message as string
   }
 }

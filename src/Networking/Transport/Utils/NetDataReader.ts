@@ -1,5 +1,5 @@
-import { ByteSize } from '../Enums/ByteSize'
-import { BitConverter } from './BitConverter'
+import { ByteSize } from '../../../Platform/Enums/ByteSize'
+import { BitConverter } from '../../../Platform/Utils/BitConverter'
 import { NetDataWriter } from './NetDataWriter'
 
 export class NetDataReader {

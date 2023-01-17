@@ -6,12 +6,15 @@ test('exception without message or inner exception', (t) => {
   const exception = new SystemException()
 
   t.is(exception.name, SystemException.name)
-  t.is(exception.Message, '')
+  t.assert(
+    exception.Message.includes(SystemException.name),
+    'message should contain exception name'
+  )
   t.is(exception.InnerException, null)
 })
 
 test('exception with message', (t) => {
-  const message = 'error message'
+  const message = 'message'
   const exception = new SystemException(message)
 
   t.is(exception.name, SystemException.name)
@@ -20,7 +23,7 @@ test('exception with message', (t) => {
 })
 
 test('exception with message and inner exception', (t) => {
-  const message = 'error message'
+  const message = 'message'
 
   const innerException = new SystemException()
   const exception = new SystemException(message, innerException)

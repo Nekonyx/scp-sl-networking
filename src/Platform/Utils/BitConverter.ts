@@ -2,13 +2,9 @@ import { endianness } from 'os'
 
 import { ByteSize } from '../Enums/ByteSize'
 
-/**
- * Converts base data types to an array of bytes, and an array of bytes to base data types.
- */
+/** Converts base data types to an array of bytes, and an array of bytes to base data types. */
 export class BitConverter {
-  /**
-   * Indicates the byte order ("endianness") in which data is stored in this computer architecture.
-   */
+  /** Indicates the byte order ("endianness") in which data is stored in this computer architecture. */
   public static readonly IsLittleEndian: boolean = endianness() === 'LE'
 
   /**
@@ -26,7 +22,9 @@ export class BitConverter {
    * @returns A Buffer of 1 byte with a value of 1 or 0.
    */
   public static FromBoolean(value: boolean): Buffer {
-    return Buffer.from([value ? 1 : 0])
+    const buffer = Buffer.alloc(1)
+    buffer.writeUInt8(value ? 1 : 0)
+    return buffer
   }
 
   /**
@@ -144,7 +142,9 @@ export class BitConverter {
    * @returns
    */
   public static ToChar(bytes: Buffer, startIndex: number): string {
-    return bytes.subarray(startIndex, startIndex + ByteSize.Char).toString('utf16le')
+    return bytes
+      .subarray(startIndex, startIndex + ByteSize.Char)
+      .toString('utf16le')
   }
 
   /**
@@ -197,7 +197,10 @@ export class BitConverter {
    * Converts the numeric value of each element of a specified array of bytes to its equivalent hexadecimal string representation.
    * @param bytes An array of bytes.
    */
-  public static ToString(bytes: Buffer): string {
+  public static ToString(bytes: Buffer): string
+  public static ToString(bytes: Buffer, startIndex: number): string
+  public static ToString(bytes: Buffer, startIndex: number, length: number): string
+  public static ToString(bytes: Buffer, startIndex?: number, length?: number): string {
     return bytes.toString('hex')
   }
 

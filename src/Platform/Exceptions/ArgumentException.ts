@@ -1,6 +1,14 @@
 import { Exception } from './Exception'
 import { SystemException } from './SystemException'
 
+const DefaultMessage = 'Value does not fall within the expected range.'
+
+export interface IArgumentExceptionParams {
+  message?: string
+  innerException?: Exception
+  paramName?: string
+}
+
 /**
  * The exception that is thrown when one of the arguments provided to a method is not valid.
  */
@@ -8,7 +16,7 @@ export class ArgumentException extends SystemException {
   /**
    * Name of the parameter that causes this exception
    */
-  private _paramName: string | null
+  protected _paramName: string | null = null
 
   /**
    * Gets the name of the parameter that causes this exception.
@@ -57,23 +65,24 @@ export class ArgumentException extends SystemException {
     message?: string,
     paramNameOrInnerException?: string | Exception,
     innerException?: Exception
-  )
-  public constructor(
-    message?: string,
-    paramNameOrInnerException?: string | Exception,
-    innerException?: Exception
   ) {
-    // prettier-ignore
-    super(
-      message,
-      paramNameOrInnerException instanceof Exception
-        ? paramNameOrInnerException
-        : innerException
-    )
+    super(DefaultMessage)
 
-    this._paramName =
-      typeof paramNameOrInnerException === 'string'
-        ? paramNameOrInnerException
-        : null
+    if (message) {
+      this.message = message
+    }
+
+    if (typeof paramNameOrInnerException === 'string') {
+      this._paramName = paramNameOrInnerException
+      this.message += `\nParameter name: ${this._paramName}`
+    }
+
+    if (paramNameOrInnerException instanceof Exception) {
+      this._innerException = paramNameOrInnerException
+    }
+
+    if (innerException instanceof Exception) {
+      this._innerException = innerException
+    }
   }
 }
